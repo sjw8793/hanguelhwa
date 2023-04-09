@@ -1,0 +1,14 @@
+{
+	"Blacksmith:dialogue1":{
+		"NAME": "Christoph",
+		"CONTENT": "As Aether obeys the cycle, as death and decay give way to new life... So too, do the memories we share inspire others..."
+	},
+	"Blacksmith:dialogue2":{
+		"NAME": "Ada",
+		"CONTENT": "Sorry, did you say something?"
+	},
+	"Blacksmith:dialogue3":{
+		"NAME": "Christoph",
+		"CONTENT": "Negative."
+	}
+}
