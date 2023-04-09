@@ -1,9 +1,9 @@
 import os
+import json
 import openai
 import config
 
 openai.api_key = config.api_key
-
 
 
 ### Dictionaries ###
@@ -12,6 +12,19 @@ region = dict()
 keyword = dict()
 item = dict()
 skill = dict()
+
+
+# Get names from json script and add into character dict
+# Returns character dict
+def parseJson2Char(filePath):
+    file = open(filePath)
+    data = json.load(file)
+
+    for id, script in data.items():
+        appendRule(character, script["NAME"], script["NAME"])
+    
+    return character
+
 
 # Select dictionary, original word, translation word
 def appendRule(dic, origin, trans):
@@ -62,5 +75,3 @@ def getTranslation(script):
         presence_penalty=0)
     
     return response.choices[0].text.strip()
-
-# 

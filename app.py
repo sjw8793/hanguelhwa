@@ -6,7 +6,7 @@ import translate
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = config.flask_key
-app.config['UPLOAD_FOLDER'] = '*/uploads'
+app.config['UPLOAD_FOLDER'] = '*/Scripts/orig'
 
 
 @app.route('/')
@@ -14,7 +14,7 @@ def home():
     return render_template('index.html')
 
 
-@app.route('/translated', methods=['GET', 'POST'])
+@app.route('/charRule', methods=['GET', 'POST'])
 def result():
     if request.method == 'POST':
         # Check if the post request has a file
@@ -32,10 +32,14 @@ def result():
         # Save file in local
         fname = secure_filename(script.filename)
         script.save(os.path.join(app.config['UPLOAD_FOLDER'], fname))
+        print("File saved successfully")
 
+        # result<라는 딕셔너리를 받아서 넘겨주어야 함!!
+        print(os.path.join(app.config['UPLOAD_FOLDER'], fname))
+        result = translate.parseJson2Char(os.path.join(app.config['UPLOAD_FOLDER'], fname))
 
-        ttt = translate.getTranslation(script)
-        return render_template('transResult.html', **locals())
+        #ttt = translate.getTranslation(script)
+        return render_template('ruleAppend.html', **locals())
 
 
 if __name__ == '__main__':
