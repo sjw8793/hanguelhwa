@@ -19,19 +19,25 @@ def home():
 @app.route('/charRule', methods=['POST'])
 def charRegister():
 	if request.method == 'POST':
-		script = request.files['scriptFile']
+		# 캐릭터 추가인 경우
+		if request.form.get('submit') == 'new':
+			newChar = request.form['newChar']
+			charList = translate.appendChar(newChar, "")
 
-		# If file is not empty
-		# if script.filename == '':
-		
-		# Save file in local
-		fname = secure_filename(script.filename)
-		script.save(os.path.join(app.config['UPLOAD_FOLDER'], fname))
+		# 파일 업로드에서 넘어온 경우
+		else:
+			script = request.files['scriptFile']
+
+			# If file is not empty
+			# if script.filename == '':
+			
+			# Save file in local
+			fname = secure_filename(script.filename)
+			script.save(os.path.join(app.config['UPLOAD_FOLDER'], fname))
 	
-	# result<라는 딕셔너리를 받아서 넘겨주어야 함!!
-	result = translate.parseJson2Char(os.path.join(app.config['UPLOAD_FOLDER'], fname))
+			# Initialize character dictionary
+			charList = translate.parseJson2Char(os.path.join(app.config['UPLOAD_FOLDER'], fname))
 
-	#ttt = translate.getTranslation(script)
 	return render_template('ruleAppend.html', **locals())
 
 

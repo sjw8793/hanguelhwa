@@ -37,7 +37,7 @@
     </p>
 
     <form class="mt-4" action="/charRule" name="charDict" method="post" enctype="multipart/form-data">
-      {% for name, value in result.items() %}
+      {% for name, value in charList.items() %}
 			<div class="row">
 				<div class="col-sm-3 my-3">
 					{{ name }}
@@ -47,28 +47,28 @@
 				</div>
 			</div>
       {% endfor %}
-        <button type="button" class="btn btn-primary" name="add" data-toggle="modal" data-target="#addChar">+ add character</button>
-        <button type="submit" class="btn btn-primary float-end" name="submit">Save</button>
+        <button type="button" class="btn btn-primary" name="add" data-bs-toggle="modal" data-bs-target="#addChar">+ add character</button>
+        <button type="submit" class="btn btn-primary float-end" name="submit" value="done">Save</button>
     </form>
 	
 		<!-- Modal -->
-		<div class="modal fade" id="myModal" role="dialog">
-			<div class="modal-dialog modal-sm">
+		<form class="modal fade" action="/charRule" method="post" id="addChar" role="dialog">
+			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">Add Character</h4>
+						<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 					</div>
 					<div class="modal-body">
 						<p>Enter a new character name:</p>
 						<input type="text" name="newChar" class="form-control input" required>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-secondary" name="submit" value="new" required>add</button>
 					</div>
 				</div>
 			</div>
-		</div>
+		</form>
   </div>
 </main>
 

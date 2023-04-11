@@ -7,11 +7,21 @@ openai.api_key = config.API_KEY
 
 
 ### Dictionaries ###
-character = dict()
-region = dict()
-keyword = dict()
-item = dict()
-skill = dict()
+
+# character = {
+# 	char1 : {
+# 		NAME : translated name,
+# 		DESC : description for character,
+# 		TONE : [character's, tone, keywords]
+# 	},
+#	char2 : { ... }
+#}
+
+characters = dict()
+regions = dict()
+keywords = dict()
+items = dict()
+skills = dict()
 
 
 # Get names from json script and add into character dict
@@ -23,23 +33,16 @@ def parseJson2Char(filePath):
 	for id, script in data.items():
 		appendChar(script["NAME"], "")
 	
-	return character
+	return characters
 
 
-# Select dictionary, original word, translation word
-def appendRule(dic, origin, trans):
-	try:
-		dic[origin] = trans
-	except NameError:
-		print("Error! Selected dictionary doesn't exist")
-	
 def appendChar(origin, trans):
-	character[origin] = trans
-	return character
+	characters.update({origin:trans})
+	return characters
 
 def appendReg(origin, trans):
-	character[origin] = trans
-	return region
+	regions.update({origin:trans})
+	return regions
 
 # Pre-translation with Translate Term Dictionary
 def ruleTrans(sentence):
