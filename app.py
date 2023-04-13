@@ -1,14 +1,18 @@
-from flask import Flask, flash, render_template, request, redirect
+from flask import Flask, session, render_template, request, redirect
 from werkzeug.utils import secure_filename
 import os
+import copy
 import config
 import translate
+from fileManage import Script
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = config.FLASK_KEY
+app.secret_key = config.id_generator()
 app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'ScriptEN')
+app.config['HANGUL_FOLDER'] = os.path.join(os.getcwd(), 'ScriptKR')
 
 os.makedirs('ScriptEN', exist_ok=True)
+os.makedirs('ScriptKR', exist_ok=True)
 
 
 @app.route('/')
@@ -26,19 +30,36 @@ def charRegister():
 
 		# 파일 업로드에서 넘어온 경우
 		else:
-			script = request.files['scriptFile']
+			file = request.files['scriptFile']
+			filePath = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file.filename))
 
 			# If file is not empty
 			# if script.filename == '':
 			
 			# Save file in local
-			fname = secure_filename(script.filename)
-			script.save(os.path.join(app.config['UPLOAD_FOLDER'], fname))
+			file.save(filePath)
+			file = Script(filePath)
+			session['file'] = filePath
 	
 			# Initialize character dictionary
-			charList = translate.parseJson2Char(os.path.join(app.config['UPLOAD_FOLDER'], fname))
+			charList = translate.parseJson2Char(file)
 
-	return render_template('ruleAppend.html', **locals())
+	return render_template('ruleAppend.html', charList = charList)
+
+
+@app.route('/translation', methods=['POST'])
+def editResult():
+	oscript = Script(session['file'])
+	idList = oscript.idList
+	if request.method == 'POST':
+		charDict = request.form
+
+		for orig, trans in charDict.items():
+			translate.appendChar(orig, trans)
+	
+	kscript = copy.deepcopy(oscript)
+	translate.getTranslation(kscript)
+	return render_template('transResult.html', **locals())
 
 
 if __name__ == '__main__':

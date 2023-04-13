@@ -36,7 +36,7 @@
 			캐릭터 이름의 번역어를 용어집에 등록하세요.
     </p>
 
-    <form class="mt-4" action="/charRule" name="charDict" method="post" enctype="multipart/form-data">
+    <form class="mt-4" action="/translation" name="charDict" method="post" enctype="multipart/form-data">
       {% for name, value in charList.items() %}
 			<div class="row">
 				<div class="col-sm-3 my-3">
@@ -48,7 +48,7 @@
 			</div>
       {% endfor %}
         <button type="button" class="btn btn-primary" name="add" data-bs-toggle="modal" data-bs-target="#addChar">+ add character</button>
-        <button type="submit" class="btn btn-primary float-end" name="submit" value="done">Save</button>
+        <button type="submit" class="btn btn-primary float-end" name="submit" value="done">Submit</button>
     </form>
 	
 		<!-- Modal -->

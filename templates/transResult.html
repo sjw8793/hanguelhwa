@@ -36,18 +36,21 @@
 			게임 스크립트를 쉽게 한글화할 수 있도록 도와주는 사이트입니다.
     </p>
 
-		<form class="" action="/" method="post">
+		<form class="" action="/translation" method="post">
+			{% for id in idList %}
 			<div class="row">
 				<!-- Sentence before translation -->
 				<div id="input-group" class="col-lg-6 my-3">
-					<input type="text" class="form-control input" name="scriptInput" id="scriptInput" placeholder="Original Script" required/>
+					<p>{{ oscript.getSpeaker(id) }}:</p>
+					<p>{{ oscript.getLine(id) }}</p>
 				</div>
 				<!-- Sentence after translation -->
 				<div id="output-group" class="col-lg-6 my-3">
-					<input type="text" class="form-control input" name="scriptOutput" id="scriptOutput" placeholder="Translated Script" value="{{ ttt }}"/>
+					<p>{{ kscript.getSpeaker(id) }}:</p>
+					<input type="text" class="form-control input" name="scriptOutput" id="scriptOutput" placeholder="Translated Script" value="{{ kscript.getLine(id) }}"/>
 				</div>
 			</div>
-	
+			{% endfor %}
 			<button id="translate-button" type="submit" class="btn btn-primary float-end">Translate</button>
 		</form>
     
