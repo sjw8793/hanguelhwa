@@ -38,5 +38,5 @@ class Script:
 		return charList
 	
 	def export(self, outpath):
-		with open(outpath, 'w') as outfile:
-			json.dump(self.data, outfile, indent=2)
+		with open(outpath, 'w', encoding='utf-8') as outfile:
+			json.dump(self.data, outfile, indent=2, ensure_ascii=False)

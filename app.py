@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, request, redirect
+from flask import Flask, session, render_template, request, redirect, send_file
 from werkzeug.utils import secure_filename
 import os
 import copy
@@ -31,6 +31,8 @@ def charRegister():
 		# 파일 업로드에서 넘어온 경우
 		else:
 			file = request.files['scriptFile']
+			fname = secure_filename(file.filename)
+			session['fname'] = fname
 			filePath = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file.filename))
 
 			# If file is not empty
@@ -39,26 +41,55 @@ def charRegister():
 			# Save file in local
 			file.save(filePath)
 			file = Script(filePath)
-			session['file'] = filePath
 	
 			# Initialize character dictionary
 			charList = translate.parseJson2Char(file)
+
+		session['charList'] = charList
 
 	return render_template('ruleAppend.html', charList = charList)
 
 
 @app.route('/translation', methods=['POST'])
 def editResult():
-	oscript = Script(session['file'])
-	idList = oscript.idList
 	if request.method == 'POST':
-		charDict = request.form
+		file = os.path.join(app.config['UPLOAD_FOLDER'], session['fname'])
+		oscript = Script(file)
+		idList = oscript.idList
 
-		for orig, trans in charDict.items():
-			translate.appendChar(orig, trans)
-	
-	kscript = copy.deepcopy(oscript)
-	translate.getTranslation(kscript)
+		# 파일 내보내기 버튼을 누른 경우
+		if request.form.get('submit') == 'export':
+			scriptFile = os.path.join(app.config['HANGUL_FOLDER'], session['fname'])
+			return send_file(scriptFile, as_attachment=True)
+
+		# save 버튼을 누른 경우
+		elif request.form.get('submit') == 'save':
+			pass
+		
+		# 캐릭터 등록에서 넘어온 경우
+		else:
+			charDict = request.form
+			charList = session['charList']
+
+			# # 사용자가 입력한 캐릭터들을 캐릭터 용어집에 등록
+			# for orig, trans in charDict.items():
+			# 	translate.appendChar(orig, trans)
+
+			for char in charList:
+				translate.appendChar(char, charDict[char])
+				translate.setTone(char, charDict[char+'_features'])
+
+		
+			# 번역한 정보는 원본 oscript를 수정하지 않고 kscript에 따로 기록
+			kscript = copy.deepcopy(oscript)
+
+			# Translate script
+			translate.getTranslation(kscript)
+
+			# Export translated script to local
+			outpath = os.path.join(app.config['HANGUL_FOLDER'], session['fname'])
+			kscript.export(outpath)
+
 	return render_template('transResult.html', **locals())
 
 
