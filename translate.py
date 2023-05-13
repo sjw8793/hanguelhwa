@@ -25,33 +25,50 @@ items = dict()
 skills = dict()
 
 
-# Get names from json script and add into character dict
-# Returns character dict
+### Parsing Functions ###
+
+# Get names from json script and add into characters dict
+# Returns characters dict
 def parseJson2Char(file: Script):
 	names = file.getNames()
 	for name in names:
-		characters[name] = ""
+		characters[name] = dict()
+		characters[name]['NAME'] = ""
+		characters[name]['DESC'] = ""
+		characters[name]['TONE'] = []
 
 	return characters
 
 
+### Character Add Functions ###
+
+# Append a new character to charcters dict
+# Returns characters dict
 def appendChar(origin, trans):
-	characters.update({origin:trans})
+	characters[origin] = dict()
+	characters[origin]['NAME'] = trans
+	characters[origin]['DESC'] = ""
+	characters[origin]['TONE'] = []
 	return characters
 
 def appendReg(origin, trans):
 	regions.update({origin:trans})
 	return regions
 
+def setTone(name, features):
+	characters[name]['TONE'] = features.split()
+
 def getTone(name):
-	pass
+	print(characters[name]['TONE'])
+	return ', '.join(characters[name]['TONE'])
+
 
 # Pre-translation with Translate Term Dictionary
 def ruleTrans(sentence):
 	# charcheck
 	if characters:
 		for origin in characters:
-			sentence = sentence.replace(origin, characters[origin])
+			sentence = sentence.replace(origin, characters[origin]['NAME'])
 	
 	# regcheck
 	if regions:
@@ -79,7 +96,7 @@ def ruleTrans(sentence):
 def aiTrans(line):
 	response = openai.Completion.create(
 		model="text-davinci-003",
-		prompt="Translate this into Korean:\n" + line,
+		prompt="Translate this into Korean.\nText: \"\"\"" + line + "\"\"\"",
 		temperature=0.05,
 		max_tokens=1000,
 		top_p=1,
@@ -91,9 +108,23 @@ def aiTrans(line):
 def fixTone(line, tone):
 	response = openai.Completion.create(
 		model="text-davinci-003",
-		prompt= tone + "다음을 " + tone +" 말투로 바꿔줘:\n" + line +"\n",
+		prompt= "다음을 " + tone +" 말투로 바꿔줘:\n" + line +"\n",
 		temperature=0.05,
-		max_tokens=600,
+		max_tokens=1000,
+		top_p=1,
+		frequency_penalty=0,
+		presence_penalty=0)
+	
+	return response.choices[0].text.strip()
+
+def aiTranswTone(name, line):
+	features = getTone(name)
+
+	response = openai.Completion.create(
+		model="text-davinci-003",
+		prompt= "Translate this game dialogue line into Korean, considering suggested characteristics. \nCharacter name:" + name + "\nCharacter features:" + features + "\nLine: \"\"\"" + line + "\"\"\"",
+		temperature=0.05,
+		max_tokens=1000,
 		top_p=1,
 		frequency_penalty=0,
 		presence_penalty=0)
@@ -102,9 +133,9 @@ def fixTone(line, tone):
 
 def getTranslation(file: Script):
 	for id in file.idList:
-		name = characters[file.getSpeaker(id)]
+		char = file.getSpeaker(id)
 		line = file.getLine(id)
-		line = aiTrans(ruleTrans(line))
-		file.saveTrans(id, name, line)
+		line = aiTranswTone(char, ruleTrans(line))
+		file.saveTrans(id, characters[char]['NAME'], line)
 	
 	return file
