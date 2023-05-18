@@ -1,9 +1,10 @@
 import pymysql
+from fileManage import Script
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from dbInit import Base, KeywordDict, CharDict
 
-engine = create_engine('mysql+pymysql://root:root@localhost/restaurant')
+engine = create_engine('mysql+pymysql://root:root@localhost/scriptDict')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -33,15 +34,31 @@ session = DBSession()
 # items = dict()
 # skills = dict()
 
+def parseJson2Char(file: Script):
+	names = file.getNames()
+	for name in names:
+		appendChar(name, "")
+
+
+def characters():
+	return session.query(CharDict)
+
 
 ### Dictionary Functions ###
 
 # Append a new character to charcters dict
 # Returns characters dict
 def appendChar(origin, trans):
-	newChar = CharDict(original=origin, trnaslated=trans)
+	newChar = CharDict(original=origin, translated=trans)
 	session.add(newChar)
 	session.commit()
+
+def getChar(name):
+	try:
+		char = session.query(CharDict).filter_by(original=name).one()
+		return char
+	except:
+		return False
 
 # Edit a character's tone info
 # Get features seperated by whitespace

@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 import copy
 import config
+import scriptDict
 import translate
 from fileManage import Script
 
@@ -20,34 +21,34 @@ def home():
 	return render_template('index.html')
 
 
-@app.route('/keyRule', methods=['POST'])
-def charRegister():
-	if request.method == 'POST':
-		# 캐릭터 추가인 경우
-		if request.form.get('submit') == 'new':
-			newChar = request.form['newChar']
-			charList = translate.appendChar(newChar, "")
+# @app.route('/keyRule', methods=['POST'])
+# def charRegister():
+# 	if request.method == 'POST':
+# 		# 캐릭터 추가인 경우
+# 		if request.form.get('submit') == 'new':
+# 			newChar = request.form['newChar']
+# 			charList = translate.appendChar(newChar, "")
 
-		# 파일 업로드에서 넘어온 경우
-		else:
-			file = request.files['scriptFile']
-			fname = secure_filename(file.filename)
-			session['fname'] = fname
-			filePath = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file.filename))
+# 		# 파일 업로드에서 넘어온 경우
+# 		else:
+# 			file = request.files['scriptFile']
+# 			fname = secure_filename(file.filename)
+# 			session['fname'] = fname
+# 			filePath = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file.filename))
 
-			# If file is not empty
-			# if script.filename == '':
+# 			# If file is not empty
+# 			# if script.filename == '':
 			
-			# Save file in local
-			file.save(filePath)
-			file = Script(filePath)
+# 			# Save file in local
+# 			file.save(filePath)
+# 			file = Script(filePath)
 	
-			# Initialize character dictionary
-			charList = translate.parseJson2Char(file)
+# 			# Initialize character dictionary
+# 			charList = translate.parseJson2Char(file)
 
-		session['charList'] = charList
+# 		session['charList'] = charList
 
-	return render_template('ruleAppend.html', charList = charList)
+# 	return render_template('ruleAppend.html', charList = charList)
 
 
 @app.route('/charRule', methods=['POST'])
@@ -56,7 +57,7 @@ def charRegister():
 		# 캐릭터 추가인 경우
 		if request.form.get('submit') == 'new':
 			newChar = request.form['newChar']
-			charList = translate.appendChar(newChar, "")
+			scriptDict.appendChar(newChar, "")
 
 		# 파일 업로드에서 넘어온 경우
 		else:
@@ -73,11 +74,11 @@ def charRegister():
 			file = Script(filePath)
 	
 			# Initialize character dictionary
-			charList = translate.parseJson2Char(file)
+			scriptDict.parseJson2Char(file)
 
-		session['charList'] = charList
+		# session['charList'] = charList
 
-	return render_template('ruleAppend.html', charList = charList)
+	return render_template('charAppend.html', charList = scriptDict.characters())
 
 
 @app.route('/translation', methods=['POST'])
@@ -106,8 +107,8 @@ def editResult():
 			# 	translate.appendChar(orig, trans)
 
 			for char in charList:
-				translate.appendChar(char, charDict[char])
-				translate.setTone(char, charDict[char+'_features'])
+				scriptDict.appendChar(char, charDict[char])
+				scriptDict.setTone(char, charDict[char+'_features'])
 
 		
 			# 번역한 정보는 원본 oscript를 수정하지 않고 kscript에 따로 기록

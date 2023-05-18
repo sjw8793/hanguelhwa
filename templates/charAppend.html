@@ -37,13 +37,13 @@
     </p>
 
     <form class="mt-4" action="/translation" name="charDict" method="post" enctype="multipart/form-data">
-      {% for name, value in charList.items() %}
+      {% for char in charList %}
 			<div class="row">
 				<div class="col-sm-3 my-3">
-					<b>{{ name }}</b> :
+					<b>{{ char.original }}</b> :
 				</div>
 				<div class="col-sm-9 my-3">
-					<input type="text" name="{{ name }}" class="form-control input" required>
+					<input type="text" name="{{ char.original }}" class="form-control input" required>
 				</div>
 			</div>
 			<div class="row">
@@ -53,7 +53,7 @@
 					주요 특징:
 				</div>
 				<div class="col-sm-8 mb-3">
-					<input type="text" name="{{ name }}_features" class="form-control input" placeholder="스페이스로 구분, 최대 5개 입력">
+					<input type="text" name="{{ char.original }}_features" class="form-control input" placeholder="스페이스로 구분, 최대 5개 입력">
 				</div>
 			</div>
       {% endfor %}

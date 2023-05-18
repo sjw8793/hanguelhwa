@@ -2,7 +2,9 @@ import os
 import json
 import openai
 import config
+import scriptDict
 from fileManage import Script
+from dbInit import CharDict, KeywordDict
 
 openai.api_key = config.API_KEY
 
@@ -18,11 +20,11 @@ openai.api_key = config.API_KEY
 #	char2 : { ... }
 #}
 
-characters = dict()
-regions = dict()
-keywords = dict()
-items = dict()
-skills = dict()
+# characters = dict()
+# regions = dict()
+# keywords = dict()
+# items = dict()
+# skills = dict()
 
 
 ### Parsing Functions ###
@@ -32,63 +34,60 @@ skills = dict()
 def parseJson2Char(file: Script):
 	names = file.getNames()
 	for name in names:
-		characters[name] = dict()
-		characters[name]['NAME'] = ""
-		characters[name]['DESC'] = ""
-		characters[name]['TONE'] = []
-
-	return characters
+		scriptDict.appendChar(name, "")
 
 
 ### Character Add Functions ###
 
 # Append a new character to charcters dict
 # Returns characters dict
-def appendChar(origin, trans):
-	characters[origin] = dict()
-	characters[origin]['NAME'] = trans
-	characters[origin]['DESC'] = ""
-	characters[origin]['TONE'] = []
-	return characters
+# def appendChar(origin, trans):
+# 	characters[origin] = dict()
+# 	characters[origin]['NAME'] = trans
+# 	characters[origin]['DESC'] = ""
+# 	characters[origin]['TONE'] = []
+# 	return characters
 
-def appendReg(origin, trans):
-	regions.update({origin:trans})
-	return regions
+# def appendReg(origin, trans):
+# 	regions.update({origin:trans})
+# 	return regions
 
-def setTone(name, features):
-	characters[name]['TONE'] = features.split()
+# def setTone(name, features):
+# 	characters[name]['TONE'] = features.split()
 
-def getTone(name):
-	print(characters[name]['TONE'])
-	return ', '.join(characters[name]['TONE'])
+# def getTone(name):
+# 	print(characters[name]['TONE'])
+# 	return ', '.join(characters[name]['TONE'])
 
 
 # Pre-translation with Translate Term Dictionary
 def ruleTrans(sentence):
 	# charcheck
-	if characters:
-		for origin in characters:
-			sentence = sentence.replace(origin, characters[origin]['NAME'])
-	
-	# regcheck
-	if regions:
-		for origin in regions:
-			sentence = sentence.replace(origin, regions[origin])
+	# if characters:
+	# 	for origin in characters:
+	# 		sentence = sentence.replace(origin, characters[origin]['NAME'])
+	for character in scriptDict.characters():
+		sentence = sentence.replace(character.original, character.translated)
+
+	# # regcheck
+	# if regions:
+	# 	for origin in regions:
+	# 		sentence = sentence.replace(origin, regions[origin])
 					
-	# keycheck
-	if regions:
-		for origin in keywords:
-			sentence = sentence.replace(origin, keywords[origin])
+	# # keycheck
+	# if regions:
+	# 	for origin in keywords:
+	# 		sentence = sentence.replace(origin, keywords[origin])
 	
-	# itemcheck
-	if items:
-		for origin in items:
-			sentence = sentence.replace(origin, items[origin])
+	# # itemcheck
+	# if items:
+	# 	for origin in items:
+	# 		sentence = sentence.replace(origin, items[origin])
 	
-	# skillcheck
-	if skills:
-		for origin in skills:
-			sentence = sentence.replace(origin, skills[origin])
+	# # skillcheck
+	# if skills:
+	# 	for origin in skills:
+	# 		sentence = sentence.replace(origin, skills[origin])
 	
 	return sentence
 
@@ -118,7 +117,7 @@ def fixTone(line, tone):
 	return response.choices[0].text.strip()
 
 def aiTranswTone(name, line):
-	features = getTone(name)
+	features = scriptDict.getTone(name)
 
 	response = openai.Completion.create(
 		model="text-davinci-003",
@@ -136,6 +135,6 @@ def getTranslation(file: Script):
 		char = file.getSpeaker(id)
 		line = file.getLine(id)
 		line = aiTranswTone(char, ruleTrans(line))
-		file.saveTrans(id, characters[char]['NAME'], line)
+		file.saveTrans(id, scriptDict.getChar().translated, line)
 	
 	return file
