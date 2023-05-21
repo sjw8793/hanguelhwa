@@ -31,19 +31,27 @@
   <div class="container">
     <br>
     <br>
-    <h1 class="mt-5">키워드 등록</h1>
-    <p class="lead">
-			키워드를 용어집에 등록하세요.
-    </p>
+    <h1 class="mt-5">용어집 등록</h1>
+    <p class="lead">주요 단어를 용어집에 등록하세요.</p>
 
-    <form class="mt-4" action="/charAppend" name="charDict" method="post" enctype="multipart/form-data">
-      {% for orig, trans in keyList.items() %}
+    <form class="mt-4" action="/charAppend" name="wordDict" method="post" enctype="multipart/form-data">
+      {% for word in wordList %}
 			<div class="row">
 				<div class="col-sm-3 my-3">
-					<b>{{ orig }}</b> :
+					<b>{{ word.original }}</b> :
 				</div>
 				<div class="col-sm-9 my-3">
-					<input type="text" name="{{ trnas }}" class="form-control input" required>
+					<input type="text" name="{{ word.original }}" class="form-control input" required>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-3 mb-3">
+				</div>
+				<div class="col-sm-1 mb-3">
+					메모:
+				</div>
+				<div class="col-sm-8 mb-3">
+					<input type="text" name="{{ char.original }}_desc" class="form-control input" placeholder="필요한 내용을 메모하세요(100자 이내)">
 				</div>
 			</div>
       {% endfor %}
@@ -52,15 +60,15 @@
     </form>
 	
 		<!-- Modal -->
-		<form class="modal fade" action="/keyRule" method="post" id="addWord" role="dialog">
+		<form class="modal fade" action="/wordAppend" method="post" id="addWord" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h4 class="modal-title">Add Keyword</h4>
+						<h4 class="modal-title">Add Word</h4>
 						<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 					</div>
 					<div class="modal-body">
-						<p>Enter a new keyword:</p>
+						<p>Enter a new word:</p>
 						<input type="text" name="newWord" class="form-control input" required>
 					</div>
 					<div class="modal-footer">

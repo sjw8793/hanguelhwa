@@ -21,37 +21,37 @@ def home():
 	return render_template('index.html')
 
 
-# @app.route('/keyRule', methods=['POST'])
-# def charRegister():
-# 	if request.method == 'POST':
-# 		# 캐릭터 추가인 경우
-# 		if request.form.get('submit') == 'new':
-# 			newChar = request.form['newChar']
-# 			charList = translate.appendChar(newChar, "")
+@app.route('/ruleAppend', methods=['POST'])
+def charRegister():
+	if request.method == 'POST':
+		# 단어 추가인 경우
+		if request.form.get('submit') == 'new':
+			newWord = request.form['newWord']
+			scriptDict.appendWord(newWord, "")
 
-# 		# 파일 업로드에서 넘어온 경우
-# 		else:
-# 			file = request.files['scriptFile']
-# 			fname = secure_filename(file.filename)
-# 			session['fname'] = fname
-# 			filePath = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file.filename))
+		# 파일 업로드에서 넘어온 경우
+		else:
+			file = request.files['scriptFile']
+			fname = secure_filename(file.filename)
+			session['fname'] = fname
+			filePath = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file.filename))
 
-# 			# If file is not empty
-# 			# if script.filename == '':
+			# If file is not empty
+			# if script.filename == '':
 			
-# 			# Save file in local
-# 			file.save(filePath)
-# 			file = Script(filePath)
+			# Save file in local
+			file.save(filePath)
+			file = Script(filePath)
 	
-# 			# Initialize character dictionary
-# 			charList = translate.parseJson2Char(file)
+			# Initialize character dictionary
+			scriptDict.parseJson2Char(file)
 
-# 		session['charList'] = charList
+		charList = scriptDict.characters()
 
-# 	return render_template('ruleAppend.html', charList = charList)
+	return render_template('charAppend.html', charList = charList)
 
 
-@app.route('/charRule', methods=['POST'])
+@app.route('/charAppend', methods=['POST'])
 def charRegister():
 	if request.method == 'POST':
 		# 캐릭터 추가인 경우
@@ -76,9 +76,9 @@ def charRegister():
 			# Initialize character dictionary
 			scriptDict.parseJson2Char(file)
 
-		# session['charList'] = charList
+		charList = scriptDict.characters()
 
-	return render_template('charAppend.html', charList = scriptDict.characters())
+	return render_template('charAppend.html', charList = charList)
 
 
 @app.route('/translation', methods=['POST'])
@@ -100,17 +100,19 @@ def editResult():
 		# 캐릭터 등록에서 넘어온 경우
 		else:
 			charDict = request.form
-			charList = session['charList']
 
 			# # 사용자가 입력한 캐릭터들을 캐릭터 용어집에 등록
 			# for orig, trans in charDict.items():
 			# 	translate.appendChar(orig, trans)
 
-			for char in charList:
-				scriptDict.appendChar(char, charDict[char])
-				scriptDict.setTone(char, charDict[char+'_features'])
+			# for char in charList:
+			# 	scriptDict.appendChar(char, charDict[char])
+			# 	scriptDict.setTone(char, charDict[char+'_features'])
 
-		
+			for char in scriptDict.characters():
+				name = char.original
+				scriptDict.updateChar(name, charDict[name], "", charDict[name+'_features'])
+
 			# 번역한 정보는 원본 oscript를 수정하지 않고 kscript에 따로 기록
 			kscript = copy.deepcopy(oscript)
 

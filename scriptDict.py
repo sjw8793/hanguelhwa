@@ -53,6 +53,27 @@ def appendChar(origin, trans):
 	session.add(newChar)
 	session.commit()
 
+def updateChar(origin, trans):
+	info = {"translated":trans}
+	if getChar:
+		session.query(CharDict).filter_by(original=origin).update(info)
+	else:
+		return False
+
+def updateChar(origin, trans, desc):
+	info = {"translated":trans, "description":desc}
+	if getChar:
+		session.query(CharDict).filter_by(original=origin).update(info)
+	else:
+		return False
+	
+def updateChar(origin, trans, desc, tone):
+	info = {"translated":trans, "description":desc, "tone":tone}
+	if getChar:
+		session.query(CharDict).filter_by(original=origin).update(info)
+	else:
+		return False
+
 def getChar(name):
 	try:
 		char = session.query(CharDict).filter_by(original=name).one()
@@ -73,13 +94,13 @@ def getTone(name):
 	return char.tone
 
 # Append a new keyword to keyword dictionary
-def appendKeyword(origin, trans):
-	newWord = KeywordDict(original=origin, translated=trans)
+def appendWord(origin, trans, desc=""):
+	newWord = KeywordDict(original=origin, translated=trans, description=desc)
 	session.add(newWord)
 	session.commit()
 
 # Delete a item in keyword dictionary
-def deleteKey(keyword):
+def deleteWord(keyword):
 	word = session.query(KeywordDict).filter_by(original=keyword).one()
 	session.delete(word)
 	session.commit()

@@ -1,0 +1,14 @@
+{
+  "Blacksmith:dialogue1": {
+    "NAME": "크리스",
+    "TEXT": "가에데르가 순환을 따르듯, 죽음과 부패가 새로운 생명에 열어줄 때처럼, 우리가 공유하는 기억들도 다른 사람들을 고무시키게 되는 거죠..."
+  },
+  "Blacksmith:dialogue2": {
+    "NAME": "에이다",
+    "TEXT": "죄송합니다, 크리스 씨, 뭐라고 하셨나요?"
+  },
+  "Blacksmith:dialogue3": {
+    "NAME": "크리스",
+    "TEXT": "부정합니다."
+  }
+}

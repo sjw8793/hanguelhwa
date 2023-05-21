@@ -95,7 +95,7 @@ def ruleTrans(sentence):
 def aiTrans(line):
 	response = openai.Completion.create(
 		model="text-davinci-003",
-		prompt="Translate this into Korean.\nText: \"\"\"" + line + "\"\"\"",
+		prompt="Translate this into Korean.\nText: " + line,
 		temperature=0.05,
 		max_tokens=1000,
 		top_p=1,
@@ -104,7 +104,7 @@ def aiTrans(line):
 	
 	return response.choices[0].text.strip()
 
-def fixTone(line, tone):
+# def fixTone(line, tone):
 	response = openai.Completion.create(
 		model="text-davinci-003",
 		prompt= "다음을 " + tone +" 말투로 바꿔줘:\n" + line +"\n",
@@ -121,7 +121,7 @@ def aiTranswTone(name, line):
 
 	response = openai.Completion.create(
 		model="text-davinci-003",
-		prompt= "Translate this game dialogue line into Korean, considering suggested characteristics. \nCharacter name:" + name + "\nCharacter features:" + features + "\nLine: \"\"\"" + line + "\"\"\"",
+		prompt= "Translate this game dialogue line into Korean, considering suggested characteristics.\nCharacter name: " + name + "\nCharacter features: " + features + "\nLine: " + line,
 		temperature=0.05,
 		max_tokens=1000,
 		top_p=1,
@@ -135,6 +135,6 @@ def getTranslation(file: Script):
 		char = file.getSpeaker(id)
 		line = file.getLine(id)
 		line = aiTranswTone(char, ruleTrans(line))
-		file.saveTrans(id, scriptDict.getChar().translated, line)
+		file.saveTrans(id, scriptDict.getChar(char).translated, line)
 	
 	return file

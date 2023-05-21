@@ -44,13 +44,6 @@ class CharDict(Base):
             'tone': self.tone
         }
 
-engine = create_engine('mysql+pymysql://root:root@localhost/scriptdict')
-if database_exists(engine.url):
-	drop_database(engine.url)
-create_database(engine.url)
-
-Base.metadata.create_all(engine)
-
 keyword_sql = '''
 CREATE TABLE keyword
 (id int NOT NULL AUTO_INCREMENT, 
@@ -70,6 +63,25 @@ CREATE TABLE characters
  PRIMARY KEY (id))
 '''
 
+drop_sql = '''
+DROP DATABASE IF EXISTS scriptdict
+'''
+
+create_sql = '''
+CREATE DATABASE scriptdict default CHARACTER SET UTF8
+'''
+
+# RESET database
+conn = pymysql.connect(host='localhost', user='root', password='root', charset='utf8')
+curs = conn.cursor()
+
+curs.execute(drop_sql)
+curs.execute(create_sql)
+
+conn.close()
+
+
+# Set up tables
 conn = pymysql.connect(host='localhost', user='root', password='root', db='scriptdict', charset='utf8')
 curs = conn.cursor()
 
@@ -77,3 +89,8 @@ curs.execute(keyword_sql)
 curs.execute(character_sql)
 
 conn.close()
+
+
+engine = create_engine('mysql+pymysql://root:root@localhost/scriptdict')
+
+Base.metadata.create_all(engine)
