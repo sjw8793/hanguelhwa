@@ -37,58 +37,15 @@ def parseJson2Char(file: Script):
 		scriptDict.appendChar(name, "")
 
 
-### Character Add Functions ###
 
-# Append a new character to charcters dict
-# Returns characters dict
-# def appendChar(origin, trans):
-# 	characters[origin] = dict()
-# 	characters[origin]['NAME'] = trans
-# 	characters[origin]['DESC'] = ""
-# 	characters[origin]['TONE'] = []
-# 	return characters
-
-# def appendReg(origin, trans):
-# 	regions.update({origin:trans})
-# 	return regions
-
-# def setTone(name, features):
-# 	characters[name]['TONE'] = features.split()
-
-# def getTone(name):
-# 	print(characters[name]['TONE'])
-# 	return ', '.join(characters[name]['TONE'])
-
+### Translate Functions ###
 
 # Pre-translation with Translate Term Dictionary
 def ruleTrans(sentence):
-	# charcheck
-	# if characters:
-	# 	for origin in characters:
-	# 		sentence = sentence.replace(origin, characters[origin]['NAME'])
 	for character in scriptDict.characters():
 		sentence = sentence.replace(character.original, character.translated)
-
-	# # regcheck
-	# if regions:
-	# 	for origin in regions:
-	# 		sentence = sentence.replace(origin, regions[origin])
-					
-	# # keycheck
-	# if regions:
-	# 	for origin in keywords:
-	# 		sentence = sentence.replace(origin, keywords[origin])
-	
-	# # itemcheck
-	# if items:
-	# 	for origin in items:
-	# 		sentence = sentence.replace(origin, items[origin])
-	
-	# # skillcheck
-	# if skills:
-	# 	for origin in skills:
-	# 		sentence = sentence.replace(origin, skills[origin])
-	
+	for word in scriptDict.words():
+		sentence = sentence.replace(word.original, word.translated)
 	return sentence
 
 # Translate with GPT-3

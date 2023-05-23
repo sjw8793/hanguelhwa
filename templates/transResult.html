@@ -37,17 +37,17 @@
     </p>
 
 		<form class="" action="/translation" method="post">
-			{% for id in idList %}
+			{% for id in kscript.idList %}
 			<div class="row">
 				<!-- Sentence before translation -->
 				<div id="input-group" class="col-lg-6 my-3">
-					<p>{{ oscript.getSpeaker(id) }}:</p>
+					<p>{{ kscript.getSpeaker(id) }}:</p>
 					<p>{{ oscript.getLine(id) }}</p>
 				</div>
 				<!-- Sentence after translation -->
 				<div id="output-group" class="col-lg-6 my-3">
 					<p>{{ kscript.getSpeaker(id) }}:</p>
-					<input type="text" class="form-control input" name="scriptOutput" id="scriptOutput" placeholder="Translated Script" value="{{ kscript.getLine(id) }}"/>
+					<input type="text" class="form-control input" rows="5" name="{{ id }}" id="{{ id }}" placeholder="Translated Script" value="{{ kscript.getLine(id) }}"/>
 				</div>
 			</div>
 			{% endfor %}

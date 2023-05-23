@@ -24,7 +24,7 @@ class Script:
 	
 	def getLine(self, id):
 		return self.data[id]['TEXT']
-	
+
 	def saveTrans(self, id, name, line):
 		self.data[id]['NAME'] = name
 		self.data[id]['TEXT'] = line

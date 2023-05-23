@@ -43,8 +43,11 @@ def parseJson2Char(file: Script):
 def characters():
 	return session.query(CharDict)
 
+def words():
+	return session.query(KeywordDict)
 
-### Dictionary Functions ###
+
+### Character Dictionary Functions ###
 
 # Append a new character to charcters dict
 # Returns characters dict
@@ -52,22 +55,8 @@ def appendChar(origin, trans):
 	newChar = CharDict(original=origin, translated=trans)
 	session.add(newChar)
 	session.commit()
-
-def updateChar(origin, trans):
-	info = {"translated":trans}
-	if getChar:
-		session.query(CharDict).filter_by(original=origin).update(info)
-	else:
-		return False
-
-def updateChar(origin, trans, desc):
-	info = {"translated":trans, "description":desc}
-	if getChar:
-		session.query(CharDict).filter_by(original=origin).update(info)
-	else:
-		return False
 	
-def updateChar(origin, trans, desc, tone):
+def updateChar(origin, trans, desc=None, tone=None):
 	info = {"translated":trans, "description":desc, "tone":tone}
 	if getChar:
 		session.query(CharDict).filter_by(original=origin).update(info)
@@ -93,11 +82,22 @@ def getTone(name):
 	char = session.query(CharDict).filter_by(original=name).one()
 	return char.tone
 
+
+
+### Word Dictionary Functions ###
+
 # Append a new keyword to keyword dictionary
-def appendWord(origin, trans, desc=""):
+def appendWord(origin, trans, desc=None):
 	newWord = KeywordDict(original=origin, translated=trans, description=desc)
 	session.add(newWord)
 	session.commit()
+
+def updateWord(origin, trans, desc=None):
+	info = {"translated":trans, "description":desc}
+	if getChar:
+		session.query(KeywordDict).filter_by(original=origin).update(info)
+	else:
+		return False
 
 # Delete a item in keyword dictionary
 def deleteWord(keyword):
