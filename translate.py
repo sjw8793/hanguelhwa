@@ -78,7 +78,7 @@ def aiTranswTone(name, line):
 
 	response = openai.Completion.create(
 		model="text-davinci-003",
-		prompt= "Translate this game dialogue line into Korean, considering suggested characteristics.\nCharacter name: " + name + "\nCharacter features: " + features + "\nLine: " + line,
+		prompt= "Translate this game dialogue line into Korean, considering suggested characteristics.\nCharacter name: " + name + "\nCharacter features: " + features + "\nLine: " + line + "\nTranslated line:",
 		temperature=0.05,
 		max_tokens=1000,
 		top_p=1,

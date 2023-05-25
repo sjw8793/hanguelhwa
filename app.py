@@ -91,6 +91,12 @@ def editResult():
 
 		# 파일 내보내기 버튼을 누른 경우
 		if request.form.get('submit') == 'export':
+			lines = request.form
+			kscript = Script(kpath)
+
+			for id in kscript.idList:
+				kscript.saveTrans(id, kscript.getSpeaker(id), lines[id])
+				
 			outFile = os.path.join(app.config['HANGUL_FOLDER'], session['fname'])
 			return send_file(outFile, as_attachment=True)
 

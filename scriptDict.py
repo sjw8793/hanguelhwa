@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from dbInit import Base, KeywordDict, CharDict
 
-engine = create_engine('mysql+pymysql://root:root@localhost/scriptDict')
+engine = create_engine('mysql+pymysql://root:root@localhost/scriptdict')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)

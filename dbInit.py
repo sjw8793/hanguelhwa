@@ -1,10 +1,10 @@
 import os
 import sys
 import pymysql
+import config
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, text
-from sqlalchemy_utils import database_exists, create_database, drop_database
 
 Base = declarative_base()
 
