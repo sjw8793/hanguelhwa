@@ -37,11 +37,11 @@
     </p>
 
 		<form class="" action="/translation" method="post">
-			{% for id in kscript.idList %}
+			{% for id in range(kscript.len) %}
 			<div class="row" rows="8">
 				<!-- Sentence before translation -->
 				<div id="input-group" class="col-lg-6 my-3">
-					<p>{{ kscript.getSpeaker(id) }}:</p>
+					<p>{{ oscript.getSpeaker(id) }}:</p>
 					<p>{{ oscript.getLine(id) }}</p>
 				</div>
 				<!-- Sentence after translation -->

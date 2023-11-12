@@ -94,8 +94,9 @@ def editResult():
 			lines = request.form
 			kscript = Script(kpath)
 
-			for id in kscript.idList:
-				kscript.saveTrans(id, kscript.getSpeaker(id), lines[id])
+			# for id in kscript.idList:
+			for id in range(kscript.len):
+				kscript.saveTrans(id, kscript.getSpeaker(id), lines[str(id)])
 				
 			outFile = os.path.join(app.config['HANGUL_FOLDER'], session['fname'])
 			return send_file(outFile, as_attachment=True)
@@ -105,7 +106,8 @@ def editResult():
 			lines = request.form
 			kscript = Script(kpath)
 
-			for id in kscript.idList:
+			# for id in kscript.idList:
+			for id in range(kscript.len):
 				kscript.saveTrans(id, kscript.getSpeaker(id), lines[id])
 
 		# 캐릭터 등록에서 넘어온 경우

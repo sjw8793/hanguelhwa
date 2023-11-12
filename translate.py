@@ -88,10 +88,11 @@ def aiTranswTone(name, line):
 	return response.choices[0].text.strip()
 
 def getTranslation(file: Script):
-	for id in file.idList:
+	for id in range(file.len):
 		char = file.getSpeaker(id)
 		line = file.getLine(id)
 		line = aiTranswTone(char, ruleTrans(line))
 		file.saveTrans(id, scriptDict.getChar(char).translated, line)
+	print(file.data) # TEST
 	
 	return file

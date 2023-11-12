@@ -1,42 +1,33 @@
-import json
-import copy
+import pandas as pd
+import copy, json
 
 class Script:
-	def __init__(self, path):
+	def __init__(self, path:str):
 		self.path = path
-		self.data = json.load(open(path))
-		self.idList = []
-		self.__update()
+		if self.path.endswith(".json"):
+			self.data = pd.read_json(self.path, encoding='utf-8')
+		else:
+			self.data = pd.read_excel(self.path)
+		self.len = len(self.data)
 	
 	def __copy__(self):
 		return Script(self.path)
 	
 	def __deepcopy__(self, memo):
 		return Script(copy.deepcopy(self.path, memo))
-		
-	def update(self):
-		for id in self.data.keys():
-			self.idList.append(id)
-	__update = update
 
 	def getSpeaker(self, id):
-		return self.data[id]['NAME']
+		return self.data.loc[id, 'NAME']
 	
 	def getLine(self, id):
-		return self.data[id]['TEXT']
+		return self.data.loc[id, 'TEXT']
 
 	def saveTrans(self, id, name, line):
-		self.data[id]['NAME'] = name
-		self.data[id]['TEXT'] = line
+		self.data.loc[id, 'NAME'] = name
+		self.data.loc[id, 'TEXT'] = line
 
 	def getNames(self):
-		charList = []
-		for script in self.data.values():
-			char = script['NAME']
-			if char not in charList:
-				charList.append(char)
-		return charList
+		return self.data['NAME'].unique().tolist()
 	
 	def export(self, outpath):
-		with open(outpath, 'w', encoding='utf-8') as outfile:
-			json.dump(self.data, outfile, indent=2, ensure_ascii=False)
+		self.data.to_excel(excel_writer=outpath)
